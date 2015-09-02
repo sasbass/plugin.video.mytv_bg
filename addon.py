@@ -9,8 +9,8 @@ import sys
 import requests
 import json
 import os.path
-from cookielib import Cookie
-from cookielib import CookieJar
+# from cookielib import Cookie
+# from cookielib import CookieJar
 from urllib2 import Request
 import urllib
 import urllib2
@@ -50,9 +50,6 @@ class Plugin_mod(Plugin):
                 self._make_listitem(**li_info)
             )
 
-            self.__log(pprint(li_info.get('key')))
-            self.__log(pprint(li_info.get('type')))
-
             if self._mode in ['crawl', 'interactive']:
                 print '[%d] %s%s%s (%s)' % (i + 1, '', li_info.get('label'),
                                             '', li_info.get('url'))
@@ -77,9 +74,7 @@ class Plugin_mod(Plugin):
 
         li = xbmcgui.ListItem(label, label2=label2, iconImage=iconImage,
                               thumbnailImage=thumbnail, path=path)
-        cleaned_info = clean_dict(options.get('info'))
-
-        #li.setIconImage(options.get('thumb'))
+        cleaned_info = clean_dict(options.get('info'))        
 
         li.setArt({ 'poster': options.get('thumb')})
 
@@ -91,9 +86,6 @@ class Plugin_mod(Plugin):
             li.addContextMenuItems(options['context_menu'])
 
         return options['url'], li, options.get('is_folder', True)
-
-    def __log(self, text):
-        xbmc.log('%s addon: %s' % (__addon_name__, text))
 
 # END  # Plugin
 
@@ -133,6 +125,8 @@ def main_menu():
 @plugin.route('/tvlist/<type>')
 def tvList(type):
 
+    __log('HERE1')
+
     menulist=[]
     items=[]
 
@@ -143,6 +137,8 @@ def tvList(type):
         plugin.get_setting('password'),
         type
     )
+
+    __log('HERE2')
 
     if 'menu' not in signin.data:  
         if 'key' not in signin.data:
@@ -191,7 +187,7 @@ class login:
         
         if not self.token:
             self.data = self.makeUserPass()
-            self.token = self.getData(SITE_LOGIN_PAGE,self.data)
+            self.token = self.getData(SITE_LOGIN_PAGE)
             self.writeInFile()
 
         self.data=self.getLive()
