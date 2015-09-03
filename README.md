@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # plugin.video.mytv_bg
 Addon for kodi/xbmc
 =======
@@ -19,5 +18,3 @@ Email: **sasbass@targovishte.com**
 
 ### Support or Contact
 Ако имате нужда от помощ или просто желаете да се свържите с нас i.georgiev@mytv.bg или на support@mytv.bg
-
->>>>>>> master/master
