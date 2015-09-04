@@ -208,7 +208,9 @@ class login:
     def logIN(self):
         self.data = self.makeUserPass()
         self.token = self.getData(SITE_LOGIN_PAGE)
-        self.writeInFile()
+        if self.token:
+            self.writeInFile()
+        
         return
     
     def getData(self, url):
