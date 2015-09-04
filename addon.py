@@ -3,6 +3,7 @@
 
 #imports
 from xbmcswift import Plugin, xbmc, xbmcaddon, xbmcplugin, xbmcgui, clean_dict
+from urllib2 import urlopen, HTTPError
 import xbmcgui
 from pyxbmct.addonwindow import *
 import sys
@@ -136,8 +137,15 @@ def tvList(type):
         plugin.get_setting('password'),
         type
     )
+    
+    if (not signin) or (not signin.token):
+        return
 
-    if 'menu' not in signin.data:  
+    
+    if not signin.data:
+        return
+    
+    if 'menu' not in signin.data:
         if 'key' not in signin.data:
             dialog.ok("Грешка",signin.data['msg'])
             return
@@ -175,30 +183,60 @@ class login:
     token = ""
     data = ""
     request = ""
-
+    
+    __addon__ = xbmcaddon.Addon()
+    __profile_path__ = xbmc.translatePath( __addon__.getAddonInfo('profile') ).decode("utf-8")
+    
+    file_path = __profile_path__ + '/' + TOKEN_FILE
+    
+    
     def __init__(self, username, password, type):
         self.usr = username
         self.pas = password
+        self.type = type
         
         self.openReadFile()
         
         if not self.token:
-            self.data = self.makeUserPass()
-            self.token = self.getData(SITE_LOGIN_PAGE)
-            self.writeInFile()
-
+            self.logIN()
+            if not self.token:
+                return
+        
         self.data=self.getLive()
         self.data=self.getData(SITE_PATH + type)
 
+    def logIN(self):
+        self.data = self.makeUserPass()
+        self.token = self.getData(SITE_LOGIN_PAGE)
+        self.writeInFile()
+        return
+    
     def getData(self, url):
         send = urllib.urlencode(self.data)
         self.request = urllib2.Request(url, send)
-        response = urllib2.urlopen(self.request)
+        try:
+            response = urllib2.urlopen(self.request)
+        except HTTPError, e:
+            if e.code == 401:
+                self.logIN()
+                self.data=self.getLive()
+                data_new=self.getData(url)
+                return data_new
+        
         data_result = response.read()
         res = json.loads(data_result)
-
+        
         if 'token' in res:
             return res['token']
+        
+        if 'login_required' in res:
+            self.logIN()
+            return
+        
+        if 'msg' in res:
+            dialog = xbmcgui.Dialog()
+            dialog.ok("Грешка",res['msg'])
+            return
         
         return res
 
@@ -209,25 +247,23 @@ class login:
         return {'usr':self.usr,'pwd':self.pas}
 
     def writeInFile(self):
-        file_path = os.getcwd() + '/' + TOKEN_FILE
-        fopen = open(file_path, "w+")
+        fopen = open(self.file_path, "w+")
         fopen.write(self.token)
         fopen.close()
 
     def openReadFile(self):
-        file_path = os.getcwd() + '/' + TOKEN_FILE
-        if os.path.isfile(file_path):
-            fopen = open(file_path, "r")
+        if os.path.isfile(self.file_path):
+            fopen = open(self.file_path, "r")
             temp_token = fopen.read()        
             fopen.close()
             if temp_token:
                 self.token = temp_token
                 temp_token = ''
-                
+            
         else:
             self.writeInFile()
-                
-                
+        
+        
     def __log(self, text):
         xbmc.log('%s addon: %s' % (__addon_name__, text))
 
