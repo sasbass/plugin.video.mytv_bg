@@ -95,7 +95,7 @@ plugin = Plugin_mod(__addon_name__, __id__)
 if plugin.get_setting('server_url'):
     SITE_PATH = plugin.get_setting('server_url')
 else:
-    SITE_PATH = 'http://mytv.bg/api/mobile_test/'
+    SITE_PATH = 'http://mytv.bg/api/mobile_v2/'
 
 # Onli load master menu
 ONLI_MASTER_MENU = SITE_PATH + 'menu/index'
