@@ -9,12 +9,9 @@ import sys
 import requests
 import json
 import os.path
-# from cookielib import Cookie
-# from cookielib import CookieJar
 from urllib2 import Request
 import urllib
 import urllib2
-from pprint import pprint
 
 __addon_name__ = 'MyTV.BG'
 __id__ = 'plugin.video.mytv_bg'
@@ -129,6 +126,10 @@ def tvList(type):
     items=[]
 
     dialog = xbmcgui.Dialog()
+
+    if (not plugin.get_setting('username')) or (not plugin.get_setting('password')):
+        dialog.ok("Грешка","Въведете потребителско име и парола в настройките на адона!")
+        return
     
     signin = login(
         plugin.get_setting('username'), 
