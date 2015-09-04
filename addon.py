@@ -183,6 +183,7 @@ class login:
     token = ""
     data = ""
     request = ""
+    login_iteration = 0
     
     __addon__ = xbmcaddon.Addon()
     __profile_path__ = xbmc.translatePath( __addon__.getAddonInfo('profile') ).decode("utf-8")
@@ -216,24 +217,32 @@ class login:
     def getData(self, url):
         send = urllib.urlencode(self.data)
         self.request = urllib2.Request(url, send)
+        
         try:
             response = urllib2.urlopen(self.request)
         except HTTPError, e:
             if e.code == 401:
+                if login_iteration > 0:
+                    login_iteration = 0
+                    return
+                
                 self.logIN()
                 self.data=self.getLive()
                 data_new=self.getData(url)
+                login_iteration += 1
+                
                 return data_new
         
         data_result = response.read()
-        res = json.loads(data_result)
+        
+        try:
+            res = json.loads(data_result)
+        except Exception, e:
+            xbmc.log('%s addon: %s' % (__addon_name__, e))
+            return
         
         if 'token' in res:
             return res['token']
-        
-        if 'login_required' in res:
-            self.logIN()
-            return
         
         if 'msg' in res:
             dialog = xbmcgui.Dialog()
