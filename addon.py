@@ -7,7 +7,6 @@ from urllib2 import urlopen, HTTPError
 import xbmcgui
 from pyxbmct.addonwindow import *
 import sys
-import requests
 import json
 import os.path
 from urllib2 import Request
@@ -103,12 +102,19 @@ ONLI_MASTER_MENU = SITE_PATH + 'menu/index'
 SITE_LOGIN_PAGE = SITE_PATH + 'user/signin'
 # END #
 
+__addon__ = xbmcaddon.Addon()
+__version__ = __addon__.getAddonInfo('version')
+__profile_path__ = xbmc.translatePath( __addon__.getAddonInfo('profile') ).decode("utf-8")
+
+__token_filepath__ = __profile_path__ + '/' + TOKEN_FILE
+
 
 @plugin.route('/')
 def main_menu():
 
-    dataNew = requests.get(ONLI_MASTER_MENU)
-    dataNew = json.loads(dataNew.text)
+    request = urllib2.Request(ONLI_MASTER_MENU, headers={"User-Agent" : "XBMC/Kodi MyTV Addon " + str(__version__)})
+    response = urllib2.urlopen(request)
+    dataNew = json.loads(response.read())
 
     menulist = dataNew['menu']
     items = []
@@ -185,12 +191,6 @@ class login:
     request = ""
     login_iteration = 0
     
-    __addon__ = xbmcaddon.Addon()
-    __profile_path__ = xbmc.translatePath( __addon__.getAddonInfo('profile') ).decode("utf-8")
-    
-    file_path = __profile_path__ + '/' + TOKEN_FILE
-    
-    
     def __init__(self, username, password, type):
         self.usr = username
         self.pas = password
@@ -216,7 +216,7 @@ class login:
     
     def getData(self, url):
         send = urllib.urlencode(self.data)
-        self.request = urllib2.Request(url, send)
+        self.request = urllib2.Request(url, send, headers={"User-Agent" : "XBMC/Kodi MyTV Addon " + str(__version__)})
         
         try:
             response = urllib2.urlopen(self.request)
@@ -258,13 +258,13 @@ class login:
         return {'usr':self.usr,'pwd':self.pas}
 
     def writeInFile(self):
-        fopen = open(self.file_path, "w+")
+        fopen = open(__token_filepath__, "w+")
         fopen.write(self.token)
         fopen.close()
 
     def openReadFile(self):
-        if os.path.isfile(self.file_path):
-            fopen = open(self.file_path, "r")
+        if os.path.isfile(__token_filepath__):
+            fopen = open(__token_filepath__, "r")
             temp_token = fopen.read()        
             fopen.close()
             if temp_token:
