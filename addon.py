@@ -255,7 +255,21 @@ class login:
         return {'token': self.token}
 
     def makeUserPass(self):
-        return {'usr':self.usr,'pwd':self.pas}
+        return {
+            "usr":self.usr,
+            "pwd":self.pas,
+            "access_type":"xbmc_kodi",
+            "device_info": json.dumps({
+                "board":xbmc.getInfoLabel("System.BuildVersion"),
+                "brand":"xbmc/kodi " + xbmc.getInfoLabel("System.ProfileName"),
+                "device":xbmc.getInfoLabel("System.KernelVersion"),
+                "display":xbmc.getInfoLabel("System.FriendlyName"),
+                "model":xbmc.getInfoLabel("System.BuildDate"),
+                "product":"",
+                "push_id":"",
+                "uuid":""
+            })
+        }
 
     def writeInFile(self):
         fopen = open(__token_filepath__, "w+")
