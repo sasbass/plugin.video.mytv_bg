@@ -221,17 +221,9 @@ class login:
         try:
             response = urllib2.urlopen(self.request)
         except HTTPError, e:
-            if e.code == 401:
-                if login_iteration > 0:
-                    login_iteration = 0
-                    return
-                
-                self.logIN()
-                self.data=self.getLive()
-                data_new=self.getData(url)
-                login_iteration += 1
-                
-                return data_new
+            dialog = xbmcgui.Dialog()
+            dialog.ok("Error",e.code)
+            return
         
         data_result = response.read()
         
@@ -244,10 +236,25 @@ class login:
         if 'token' in res:
             return res['token']
         
-        if 'msg' in res:
-            dialog = xbmcgui.Dialog()
-            dialog.ok("Грешка",res['msg'])
-            return
+        if 'status' in res:
+            if res['login'] == 'yes':
+
+                if self.login_iteration > 0:
+                    self.login_iteration = 0
+                    return
+                
+                self.logIN()
+                self.data=self.getLive()
+                data_new=self.getData(url)
+                self.login_iteration += 1
+                
+                return data_new
+
+            else:
+
+                dialog = xbmcgui.Dialog()
+                dialog.ok("Грешка",res['msg'])
+                return
         
         return res
 
