@@ -13,8 +13,8 @@ from urllib2 import Request
 import urllib
 import urllib2
 
-__addon_name__ = 'MyTV.BG'
-__id__ = 'plugin.video.mytv_bg'
+__addon_name__ = xbmcaddon.Addon().getAddonInfo('name')
+__id__ = xbmcaddon.Addon().getAddonInfo('id')
 
 TOKEN_FILE = 'token.txt'
 
