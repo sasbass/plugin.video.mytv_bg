@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.mytv_bg" name="MyTV.BG" version="2.0" provider-name="i.georgiev@mytv.bg">
+<addon id="plugin.video.mytv_bg" name="MyTV.BG" version="2.0.0" provider-name="i.georgiev@mytv.bg">
   <requires>
     <import addon="xbmc.python" version="2.1.1"/>
     <import addon="script.module.requests" version="2.7.0"/> 
@@ -12,14 +12,14 @@
   <extension point="xbmc.addon.metadata">
     <platform>all</platform>
     <language>bg</language>
-    <summary lang="bg">Видео плъгин за MyTV.bg https://www.mytv.bg/</summary>
-    <summary lang="en">Video addon for MyTV.bg https://www.mytv.bg/</summary>
+    <summary lang="bg">Видео плъгин за MyTV.bg https://mytv.bg/</summary>
+    <summary lang="en">Video addon for MyTV.bg https://mytv.bg/</summary>
     <description lang="bg">
-Този адон предлага достъп до стриймовете на MyTV.bg (канали на живо и сериали).
+Този адон предлага достъп до стриймовете на MyTV.BG (канали на живо и сериали).
 За да го ползвате е нужна активна MyTV.bg регистрация.
 </description>
 <description lang="en">
-This addon provides access to streams of MyTV.bg (channels live and series).
+This addon provides access to streams of MyTV.BG (channels live and series).
 To use it is necessary active MyTV.bg registration.
 </description>
     <disclaimer lang="bg">Нужни са активни потребителско име и парола.
