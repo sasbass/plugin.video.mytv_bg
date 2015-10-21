@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
     <!-- General entries -->
-    <string id="30000">Страница</string>
-    <string id="30001">Търси</string>    
-    <string id="30002">Пусни</string>
+    <string id="30000">Page</string>
+    <string id="30001">Search</string>    
+    <string id="30002">Play</string>
 	<string id="30003">Error</string>
 	<string id="30004">Server returned no data! Please try again.</string>
 	<string id="30005">Update your account in plugin settings!</string>
