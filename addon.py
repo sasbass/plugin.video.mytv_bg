@@ -13,14 +13,14 @@ from urllib2 import Request
 import urllib
 import urllib2
 
-__addon_name__ = xbmcaddon.Addon().getAddonInfo('name')
-__id__ = xbmcaddon.Addon().getAddonInfo('id')
+__addon_name__		= xbmcaddon.Addon().getAddonInfo('name')
+__id__				= xbmcaddon.Addon().getAddonInfo('id')
+__lang__			= xbmcaddon.Addon().getLocalizedString
+__addon__ 			= xbmcaddon.Addon()
+__version__ 		= __addon__.getAddonInfo('version')
+__profile_path__ 	= xbmc.translatePath( __addon__.getAddonInfo('profile') ).decode("utf-8")
+__token_filepath__	= __profile_path__ + '/token.txt'
 
-TOKEN_FILE = 'token.txt'
-
-cj = None;
-   
-thisPlugin = int(sys.argv[1])
 
 THUMBNAIL_VIEW_IDS = {'skin.confluence': 500,
                       'skin.aeon.nox': 551,
@@ -102,12 +102,6 @@ ONLI_MASTER_MENU = SITE_PATH + 'menu/index'
 SITE_LOGIN_PAGE = SITE_PATH + 'user/signin'
 # END #
 
-__addon__ = xbmcaddon.Addon()
-__version__ = __addon__.getAddonInfo('version')
-__profile_path__ = xbmc.translatePath( __addon__.getAddonInfo('profile') ).decode("utf-8")
-
-__token_filepath__ = __profile_path__ + '/' + TOKEN_FILE
-
 
 @plugin.route('/')
 def main_menu():
@@ -135,7 +129,7 @@ def tvList(type):
     dialog = xbmcgui.Dialog()
 
     if (not plugin.get_setting('username')) or (not plugin.get_setting('password')):
-        dialog.ok("Грешка","Въведете потребителско име и парола в настройките на адона!")
+        dialog.ok(__lang__(30003), __lang__(30005))
         return
     
     signin = login(
@@ -153,7 +147,7 @@ def tvList(type):
     
     if 'menu' not in signin.data:
         if 'key' not in signin.data:
-            dialog.ok("Грешка",signin.data['msg'])
+            dialog.ok(__lang__(30003), signin.data['msg'])
             return
         else:
             tvPlay(signin.data['key'])
@@ -162,7 +156,7 @@ def tvList(type):
     else:
         menulist = signin.data['menu']
         if not menulist:
-            dialog.ok('Грешка','Няма данни! Моля опитайте отново.')
+            dialog.ok(__lang__(30003), __lang__(30004))
         if menulist:
             for (key, val) in enumerate(menulist):
                 if val['type'] == 'item':
@@ -222,7 +216,7 @@ class login:
             response = urllib2.urlopen(self.request)
         except HTTPError, e:
             dialog = xbmcgui.Dialog()
-            dialog.ok("Error",e.code)
+            dialog.ok(__lang__(30003), e.code)
             return
         
         data_result = response.read()
@@ -253,7 +247,7 @@ class login:
             else:
 
                 dialog = xbmcgui.Dialog()
-                dialog.ok("Грешка",res['msg'])
+                dialog.ok(__lang__(30003), res['msg'])
                 return
         
         return res
