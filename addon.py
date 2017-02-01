@@ -301,7 +301,7 @@ class login:
             if temp_token:
 				arr = temp_token.partition(" ")
 				self.token = arr[0]
-				if arr[1] and arr[1] != plugin.get_setting('username'):
+				if arr[2] and arr[2] != plugin.get_setting('username'):
 					self.token = '';
 				temp_token = ''
         else:
